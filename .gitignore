@@ -1,0 +1,9 @@
+.idea
+certs/
+crl/
+private/
+newcerts/
+intermediate/
+
+index.*
+serial*
