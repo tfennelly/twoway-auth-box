@@ -25,10 +25,14 @@ fi
 
 mkdir -p $DIR
 
+CA_CERT=intermediate/certs/ca-chain.cert.pem
 PRIVATE_KEY=$DIR/$NAME.key
 PRIVATE_KEY_NOPASS=$DIR/$NAME.nopass.key
 CSR=$DIR/$NAME.csr
 CERT=$DIR/$NAME.crt
+P12=$DIR/$NAME.p12
+KEYSTORE=$DIR/keystore.jks
+TRUSTSTORE=$DIR/truststore.jks
 
 rm -rf $PRIVATE_KEY $CSR $CERT 
 
@@ -57,12 +61,27 @@ openssl ca -config intermediate-openssl.cnf \
       -out $CERT
 chmod 444 $CERT
 
+######################################################################
+# Java KeyStore and TrustStore
+######################################################################
+
+openssl pkcs12 -export -out $P12 -inkey $PRIVATE_KEY -in $CERT -certfile $CA_CERT -name "$NAME"
+keytool -importkeystore -destkeystore $KEYSTORE -srckeystore $P12 -srcstoretype PKCS12 -alias $NAME
+keytool -import -v -trustcacerts -keystore $TRUSTSTORE -noprompt -alias cacert -file $CA_CERT
+
+######################################################################
+# Print paths to generated files
+######################################################################
+
 PWD=$(pwd)
 echo ""
 echo "============================================================"
 echo "Private key: $PWD/$PRIVATE_KEY"
 echo "Private key - no password: $PWD/$PRIVATE_KEY_NOPASS"
-echo "Certificate key: $PWD/$CERT"
-echo "CA chain file: $PWD/intermediate/certs/ca-chain.cert.pem"
+echo "Certificate: $PWD/$CERT"
+echo "CA chain file: $PWD/$CA_CERT"
+echo "PKCS#12 file: $PWD/$P12"
+echo "Java KeyStore: $PWD/$KEYSTORE"
+echo "Java TrustStore: $PWD/$TRUSTSTORE"
 echo "============================================================"
 echo ""
