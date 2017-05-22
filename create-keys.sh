@@ -16,8 +16,8 @@ NAME=$1
 DIR=intermediate/$NAME
 
 if [ -d "$DIR" ]; then
-    # Creating them again doesn't work for some reason. Maybe 
-    # they need to be revoked first, or something. Run ./ca-setup.sh
+    # Creating them again doesn't work for some reason - end up with an empty
+    # crt. Maybe they need to be revoked first, or something. Run ./ca-setup.sh
     # again if you really need to recreate them.
     echo "Keys for '$NAME' already issued."
     exit 1
