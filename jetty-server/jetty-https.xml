@@ -32,15 +32,6 @@
                                     <Set name="keyStorePassword">
                                         <Property name="org.eclipse.jetty.ssl.password"/>
                                     </Set>
-                                    <!-- Disabling Diffie-Hellman key exchange 
-                                         to simplify traffic decryption -->
-                                    <Call name="addExcludeCipherSuites">
-                                        <Arg>
-                                            <Array type="String">
-                                                <Item>.*DHE.*</Item>
-                                            </Array>
-                                        </Arg>
-                                    </Call>
                                 </New>
                             </Arg>
                         </New>
