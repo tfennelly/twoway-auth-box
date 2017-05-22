@@ -13,9 +13,19 @@
 SUBJECT="/C=US/ST=California/L=San Jose/O=CloudBees/CN=localhost/OU=CDA"
 
 NAME=$1
-PRIVATE_KEY=intermediate/private/$NAME.key.pem
-CSR=intermediate/csr/$NAME.csr.pem
-CERT=intermediate/certs/$NAME.cert.pem
+DIR=intermediate/$NAME
+
+if [ -d "$DIR" ]; then
+  echo "Keys for '$NAME' already issued."
+  exit 1
+fi
+
+mkdir -p $DIR
+
+PRIVATE_KEY=$DIR/$NAME.key
+PRIVATE_KEY_NOPASS=$DIR/$NAME.nopass.key
+CSR=$DIR/$NAME.csr
+CERT=$DIR/$NAME.crt
 
 rm -rf $PRIVATE_KEY $CSR $CERT 
 
@@ -23,8 +33,8 @@ rm -rf $PRIVATE_KEY $CSR $CERT
 # Create the key
 ######################################################################
 openssl genrsa -aes256 -out $PRIVATE_KEY 2048
-openssl rsa -in $PRIVATE_KEY -out $PRIVATE_KEY.nopass
-#chmod 400 $PRIVATE_KEY
+openssl rsa -in $PRIVATE_KEY -out $PRIVATE_KEY_NOPASS
+chmod 400 $PRIVATE_KEY $PRIVATE_KEY_NOPASS
 
 ######################################################################
 # Create the certificate
@@ -42,12 +52,13 @@ openssl ca -config intermediate-openssl.cnf \
       -extensions server_cert -days 375 -notext -md sha256 \
       -in $CSR \
       -out $CERT
-#chmod 444 $CERT
+chmod 444 $CERT
 
 PWD=$(pwd)
 echo ""
 echo "============================================================"
 echo "Private key: $PWD/$PRIVATE_KEY"
+echo "Private key - no password: $PWD/$PRIVATE_KEY_NOPASS"
 echo "Certificate key: $PWD/$CERT"
 echo "CA chain file: $PWD/intermediate/certs/ca-chain.cert.pem"
 echo "============================================================"
