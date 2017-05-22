@@ -16,8 +16,11 @@ NAME=$1
 DIR=intermediate/$NAME
 
 if [ -d "$DIR" ]; then
-  echo "Keys for '$NAME' already issued."
-  exit 1
+    # Creating them again doesn't work for some reason. Maybe 
+    # they need to be revoked first, or something. Run ./ca-setup.sh
+    # again if you really need to recreate them.
+    echo "Keys for '$NAME' already issued."
+    exit 1
 fi
 
 mkdir -p $DIR
