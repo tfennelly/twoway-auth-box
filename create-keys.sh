@@ -10,7 +10,7 @@
 # ./create-keys.sh server
 #
 
-SUBJECT="/C=US/ST=California/L=San Jose/O=CloudBees/CN=localhost/OU=CDA"
+SUBJECT="/C=US/ST=California/L=San Jose/O=Example Inc/CN=example.com/OU=CDA"
 
 NAME=$1
 DIR=intermediate/$NAME
@@ -83,5 +83,12 @@ echo "CA chain file: $PWD/$CA_CERT"
 echo "PKCS#12 file: $PWD/$P12"
 echo "Java KeyStore: $PWD/$KEYSTORE"
 echo "Java TrustStore: $PWD/$TRUSTSTORE"
+echo ""
+echo "*** Be sure to map 'example.com' to 127.0.0.1 in your /etc/hosts file !!"
+echo ""
+echo "*** Note chrome can complain about example.com certs !!"
+echo "*** And Firefox can complain about certs generated with an older version of openssl !!"
+echo "*** Try Safari !!"
+echo ""
 echo "============================================================"
 echo ""

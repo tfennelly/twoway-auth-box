@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.cloudbees.tftwoway</groupId>
+        <artifactId>twoway-auth-box</artifactId>
+        <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>twoway-auth-box-jetty</artifactId>
+    <packaging>war</packaging>
+
+    <properties>
+        <jetty-version>9.4.5.v20170502</jetty-version>
+        <servlet-api-version>2.5</servlet-api-version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>${servlet-api-version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.1.1</version>
+            </plugin>
+            <plugin>
+                <groupId>org.eclipse.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>${jetty-version}</version>
+                <configuration>
+                    <jettyXml>${project.basedir}/jetty-https.xml</jettyXml>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>jetty.ssl.keyStorePath</name>
+                            <value>${project.basedir}/../intermediate/server/server.p12</value>
+                        </systemProperty>
+                        <systemProperty>
+                            <name>org.eclipse.jetty.ssl.password</name>
+                            <value>123123</value> <!-- Must be the same as the password used when generating the keys -->
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -5,7 +5,7 @@
 # https://jamielinux.com/docs/openssl-certificate-authority/create-the-intermediate-pair.html
 #
 
-SUBJECT="/C=US/ST=California/L=San Jose/O=CloudBees/CN=localhost/OU=CDA"
+SUBJECT="/C=US/ST=California/L=San Jose/O=Example Inc/CN=example.com/OU=CDA"
 
 # Basic setup
 rm -rf certs crl newcerts private intermediate && mkdir certs crl newcerts private intermediate
