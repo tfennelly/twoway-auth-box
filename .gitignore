@@ -1,10 +1,2 @@
 .idea
-crl/
-private/
-newcerts/
-keys/
-
 nginx/certs/
-
-index.*
-serial*
