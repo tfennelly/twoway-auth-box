@@ -13,7 +13,7 @@
 source ./env.sh
 
 NAME=$1
-DIR=intermediate/$NAME
+DIR=keys/$NAME
 
 if [ -d "$DIR" ]; then
     # Creating them again doesn't work for some reason - end up with an empty
@@ -37,7 +37,7 @@ rm -rf $PRIVATE_KEY $CSR $CERT
 ######################################################################
 # Create the key
 ######################################################################
-openssl req -new -x509 -extensions v3_ca -keyout $PRIVATE_KEY -subj "$SUBJECT_BASE-$NAME" -passout pass:$PASSWD > /dev/null
+openssl req -new -x509 -keyout $PRIVATE_KEY -subj "$SUBJECT_BASE-$NAME" -passout pass:$PASSWD > /dev/null
 openssl rsa -in $PRIVATE_KEY -out $PRIVATE_KEY -passin pass:$PASSWD
 chmod 400 $PRIVATE_KEY
 
@@ -47,15 +47,15 @@ chmod 400 $PRIVATE_KEY
 ######################################################################
 
  The CSR
-openssl req -config intermediate-openssl.cnf \
+openssl req -config openssl.cnf \
       -key $PRIVATE_KEY \
       -new -sha256 \
       -subj "$SUBJECT_BASE-$NAME" \
       -out $CSR
       
 # The cert
-openssl ca -batch -config intermediate-openssl.cnf \
-      -extensions v3_ca -days 375 -notext -md sha256 \
+openssl ca -batch -config openssl.cnf \
+      -days 375 -notext -md sha256 \
       -in $CSR \
       -out $CERT
 chmod 444 $CERT
@@ -66,7 +66,7 @@ chmod 444 $CERT
 
 openssl pkcs12 -export -out $P12 -inkey $PRIVATE_KEY -in $CERT -name "$NAME" -passout pass:$PASSWD
 keytool -importkeystore -destkeystore $KEYSTORE -srckeystore $P12 -srcstoretype PKCS12 -alias $NAME -srcstorepass $PASSWD -deststorepass $PASSWD -destkeypass $PASSWD -noprompt
-keytool -import -v -trustcacerts -keystore $TRUSTSTORE -noprompt -alias cacert -file $INTR_CA_CRT -storepass $PASSWD -noprompt
+keytool -import -v -trustcacerts -keystore $TRUSTSTORE -noprompt -alias cacert -file $ROOT_CA_CRT -storepass $PASSWD -noprompt
 
 ######################################################################
 # Print paths to generated files
@@ -77,7 +77,7 @@ echo ""
 echo "============================================================"
 echo "Private key: $PWD/$PRIVATE_KEY"
 echo "Certificate: $PWD/$CERT"
-echo "CA chain file: $PWD/$INTR_CA_CHAIN_CRT"
+echo "Root CA file: $PWD/$ROOT_CA_CRT"
 echo "PKCS#12 file: $PWD/$P12"
 echo "Java KeyStore: $PWD/$KEYSTORE"
 echo "Java TrustStore: $PWD/$TRUSTSTORE"
@@ -89,7 +89,7 @@ echo "*** And Firefox can complain about certs generated with an older version o
 echo "*** Try Safari !!"
 echo ""
 echo ""
-echo "*** Also note that you can install $PWD/$INTR_CA_CRT as a trusted root CA"
+echo "*** Also note that you can install $PWD/$ROOT_CA_CRT as a trusted root CA"
 echo "*** in your key manager (e.g. keychain on Mac)"
 echo ""
 echo "============================================================"
