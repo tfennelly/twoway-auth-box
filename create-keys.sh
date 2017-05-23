@@ -10,7 +10,7 @@
 # ./create-keys.sh server
 #
 
-SUBJECT="/C=US/ST=California/L=San Jose/O=Example Inc/CN=example.com/OU=CDA"
+source ./env.sh
 
 NAME=$1
 DIR=intermediate/$NAME
@@ -25,9 +25,7 @@ fi
 
 mkdir -p $DIR
 
-CA_CERT=intermediate/certs/ca-chain.cert.pem
 PRIVATE_KEY=$DIR/$NAME.key
-PRIVATE_KEY_NOPASS=$DIR/$NAME.nopass.key
 CSR=$DIR/$NAME.csr
 CERT=$DIR/$NAME.crt
 P12=$DIR/$NAME.p12
@@ -39,24 +37,25 @@ rm -rf $PRIVATE_KEY $CSR $CERT
 ######################################################################
 # Create the key
 ######################################################################
-openssl genrsa -aes256 -out $PRIVATE_KEY 2048
-openssl rsa -in $PRIVATE_KEY -out $PRIVATE_KEY_NOPASS
-chmod 400 $PRIVATE_KEY $PRIVATE_KEY_NOPASS
+openssl req -new -x509 -extensions v3_ca -keyout $PRIVATE_KEY -subj "$SUBJECT_BASE-$NAME" -passout pass:$PASSWD > /dev/null
+openssl rsa -in $PRIVATE_KEY -out $PRIVATE_KEY -passin pass:$PASSWD
+chmod 400 $PRIVATE_KEY
+
 
 ######################################################################
 # Create the certificate
 ######################################################################
 
-# The CSR
+ The CSR
 openssl req -config intermediate-openssl.cnf \
       -key $PRIVATE_KEY \
       -new -sha256 \
-      -subj "$SUBJECT-$NAME" \
+      -subj "$SUBJECT_BASE-$NAME" \
       -out $CSR
       
 # The cert
-openssl ca -config intermediate-openssl.cnf \
-      -extensions server_cert -days 375 -notext -md sha256 \
+openssl ca -batch -config intermediate-openssl.cnf \
+      -extensions v3_ca -days 375 -notext -md sha256 \
       -in $CSR \
       -out $CERT
 chmod 444 $CERT
@@ -65,9 +64,9 @@ chmod 444 $CERT
 # Java KeyStore and TrustStore
 ######################################################################
 
-openssl pkcs12 -export -out $P12 -inkey $PRIVATE_KEY -in $CERT -certfile $CA_CERT -name "$NAME"
-keytool -importkeystore -destkeystore $KEYSTORE -srckeystore $P12 -srcstoretype PKCS12 -alias $NAME
-keytool -import -v -trustcacerts -keystore $TRUSTSTORE -noprompt -alias cacert -file $CA_CERT
+openssl pkcs12 -export -out $P12 -inkey $PRIVATE_KEY -in $CERT -name "$NAME" -passout pass:$PASSWD
+keytool -importkeystore -destkeystore $KEYSTORE -srckeystore $P12 -srcstoretype PKCS12 -alias $NAME -srcstorepass $PASSWD -deststorepass $PASSWD -destkeypass $PASSWD -noprompt
+keytool -import -v -trustcacerts -keystore $TRUSTSTORE -noprompt -alias cacert -file $INTR_CA_CRT -storepass $PASSWD -noprompt
 
 ######################################################################
 # Print paths to generated files
@@ -77,9 +76,8 @@ PWD=$(pwd)
 echo ""
 echo "============================================================"
 echo "Private key: $PWD/$PRIVATE_KEY"
-echo "Private key - no password: $PWD/$PRIVATE_KEY_NOPASS"
 echo "Certificate: $PWD/$CERT"
-echo "CA chain file: $PWD/$CA_CERT"
+echo "CA chain file: $PWD/$INTR_CA_CHAIN_CRT"
 echo "PKCS#12 file: $PWD/$P12"
 echo "Java KeyStore: $PWD/$KEYSTORE"
 echo "Java TrustStore: $PWD/$TRUSTSTORE"
@@ -91,7 +89,7 @@ echo "*** And Firefox can complain about certs generated with an older version o
 echo "*** Try Safari !!"
 echo ""
 echo ""
-echo "*** Also note that you can install $PWD/$CA_CERT as a trusted root CA"
+echo "*** Also note that you can install $PWD/$INTR_CA_CRT as a trusted root CA"
 echo "*** in your key manager (e.g. keychain on Mac)"
 echo ""
 echo "============================================================"

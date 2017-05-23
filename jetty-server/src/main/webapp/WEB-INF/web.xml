@@ -5,4 +5,13 @@
 
     <display-name>twoway-auth-box-jetty</display-name>
 
+    <filter>
+        <filter-name>SecurityFilter</filter-name>
+        <filter-class>com.cloudbees.tftwoway.SecurityFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>SecurityFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
 </web-app>
