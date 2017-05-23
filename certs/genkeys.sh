@@ -1,5 +1,9 @@
 #!/bin/bash
 
+#
+# From http://nategood.com/client-side-certificate-authentication-in-ngi
+#
+
 rm ca.* server.* client.*
 
 echo ""
