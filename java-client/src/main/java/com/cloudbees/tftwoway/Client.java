@@ -109,9 +109,9 @@ public class Client {
     public static TrustManager[] getTrustManager() throws Exception {
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         KeyStore store = KeyStore.getInstance("JKS");
-        X509Certificate cacerts = loadX509Key(CACERT);
 
         store.load(null);
+        X509Certificate cacerts = loadX509Key(CACERT);
         store.setCertificateEntry("cert", cacerts);
 
         trustManagerFactory.init(store);
