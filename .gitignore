@@ -1,9 +1,10 @@
 .idea
-certs/
 crl/
 private/
 newcerts/
 keys/
+
+nginx/certs/
 
 index.*
 serial*

@@ -1,0 +1,41 @@
+version: "3"
+services:
+  nginx_ssl:
+    build: .
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - cda_gcgs:cda-gcgs
+      - cda_rest_api:cda-rest-api
+    volumes:
+      - ./certs:/etc/nginx/certs/
+    networks:
+      - webnet
+
+  cda_gcgs:
+    image: iamdaya/flask-hello-world-envied:2
+    environment:
+      - FLASK_PORT=4000
+      - APP_NAME="GCGS"
+      - APP_DESC="Git Commit Graph Service by KK"
+    expose:
+      - "4000"
+    networks:
+      - webnet
+
+  cda_rest_api:
+    image: iamdaya/flask-hello-world-envied:2
+    environment:
+      - FLASK_PORT=4000
+      - APP_NAME="REST_API"
+      - APP_DESC="The REST API Service currently seriously resting"
+    expose:
+      - "4000"
+    links:
+      - cda_gcgs:cda-gcgs
+    networks:
+      - webnet
+
+networks:
+  webnet:
