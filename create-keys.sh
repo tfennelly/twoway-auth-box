@@ -46,7 +46,7 @@ chmod 400 $PRIVATE_KEY
 # Create the certificate
 ######################################################################
 
- The CSR
+# The CSR
 openssl req -config openssl.cnf \
       -key $PRIVATE_KEY \
       -new -sha256 \
