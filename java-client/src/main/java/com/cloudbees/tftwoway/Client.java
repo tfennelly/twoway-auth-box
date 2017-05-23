@@ -69,8 +69,6 @@ public class Client {
         SSLContext sslContext = createSSLContext();
         connection.setSSLSocketFactory(sslContext.getSocketFactory());
 
-        connection.setRequestMethod("GET");
-
         connection.connect();
         
         int responseCode = connection.getResponseCode();
