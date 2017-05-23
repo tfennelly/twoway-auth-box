@@ -56,6 +56,10 @@ public class Client {
     
     // Run the nginx script in the root.
     
+    private static final String PRIVATE_KEY = "./certs/client.key";
+    private static final String CERTIFICATE = "./certs/client.crt";
+    private static final String CACERT = "./certs/ca.crt";
+    
     static {
         // BouncyCastle is needed in order to read the private RSA keys.
         // JDK not able to read unless they are PKCS#8 encoded.
@@ -91,8 +95,8 @@ public class Client {
         KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
         KeyStore store = KeyStore.getInstance("JKS");
 
-        PrivateKey clientKey = loadRSAKey("./certs/client.key");
-        X509Certificate clientCert = loadX509Key("./certs/client.crt");
+        PrivateKey clientKey = loadRSAKey(PRIVATE_KEY);
+        X509Certificate clientCert = loadX509Key(CERTIFICATE);
         
         store.load(null);
         store.setKeyEntry("key", clientKey, "123123".toCharArray(), new Certificate[] { clientCert });
@@ -105,7 +109,7 @@ public class Client {
     public static TrustManager[] getTrustManager() throws Exception {
         TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         KeyStore store = KeyStore.getInstance("JKS");
-        X509Certificate cacerts = loadX509Key("./certs/ca.crt");
+        X509Certificate cacerts = loadX509Key(CACERT);
 
         store.load(null);
         store.setCertificateEntry("cert", cacerts);
