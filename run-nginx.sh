@@ -1,6 +1,10 @@
 #!/bin/bash
 
-cd nginx
+cd jetty-server
+mvn clean install
+docker build -t twoway-auth-box-jetty .
+
+cd ../nginx
 rm -rf certs
 mkdir certs
 cp ../certs/server.* certs 
