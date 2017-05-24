@@ -3,7 +3,7 @@ services:
   nginx_ssl:
     build: .
     ports:
-      - "8080:80"
+      - "8443:443"
     command: [nginx-debug, '-g', 'daemon off;']
     networks:
       - webnet
