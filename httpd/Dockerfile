@@ -5,5 +5,5 @@ COPY certs/server.crt /usr/local/apache2/conf/server.crt
 COPY certs/ca.crt /usr/local/apache2/conf/server-ca.crt
 COPY certs/ca.crt /usr/local/apache2/conf/ssl.crt/ca-bundle.crt
 
-COPY httpd/httpd.conf /usr/local/apache2/conf/httpd.conf
-COPY httpd/httpd-ssl.conf /usr/local/apache2/conf/extra/httpd-ssl.conf
+COPY httpd.conf /usr/local/apache2/conf/httpd.conf
+COPY httpd-ssl.conf /usr/local/apache2/conf/extra/httpd-ssl.conf
