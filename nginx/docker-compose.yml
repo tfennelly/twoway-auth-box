@@ -1,21 +1,17 @@
 version: "3"
 services:
-
   nginx_ssl:
     build: .
     ports:
-      - "8443:443"
-    links:
-      - upstream_server:upstream-server
-    volumes:
-      - ./certs:/etc/nginx/certs/
+      - "8080:80"
+    command: [nginx-debug, '-g', 'daemon off;']
     networks:
       - webnet
 
-  upstream_server:
+  backend:
     image: twoway-auth-box-jetty
     ports:
-      - "18080:8080"
+      - "18082:8080"
     networks:
       - webnet
 
