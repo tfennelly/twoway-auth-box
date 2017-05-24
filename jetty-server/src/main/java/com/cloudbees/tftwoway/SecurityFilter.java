@@ -46,7 +46,14 @@ public class SecurityFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         X509Certificate[] certs = (X509Certificate[]) servletRequest.getAttribute("javax.servlet.request.X509Certificate");
-        byte[] response = certs[0].toString().getBytes(Charset.forName("UTF-8"));
+        byte[] response;
+
+        if (certs != null && certs.length > 0) {
+            response = certs[0].toString().getBytes(Charset.forName("UTF-8"));
+        } else {
+            // Or you could get it from somewhere else
+            response = "*** No client cert".toString().getBytes(Charset.forName("UTF-8"));
+        }
 
         ((HttpServletResponse)servletResponse).setStatus(HttpServletResponse.SC_OK);
         servletResponse.setCharacterEncoding("UTF-8");
