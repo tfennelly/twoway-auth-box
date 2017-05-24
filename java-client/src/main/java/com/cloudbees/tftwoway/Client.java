@@ -53,12 +53,19 @@ import java.security.spec.PKCS8EncodedKeySpec;
  * @author <a href="mailto:tom.fennelly@gmail.com">tom.fennelly@gmail.com</a>
  */
 public class Client {
-    
-    // Run the nginx script in the root.
+
+    //
+    // How to use:
+    //  1. Run the nginx script (in the root) or the jetty-server project.
+    //  2. Run this classes main method, with the CWD being the root of the project.
+    //
     
     private static final String PRIVATE_KEY = "./certs/client.key";
     private static final String CERTIFICATE = "./certs/client.crt";
     private static final String CACERT = "./certs/ca.crt";
+
+    // You'll need to map 127.0.0.1 to example.com in /etc/hosts (or equivalent).
+    private static final String SERVER_ADDRESS = "https://example.com:8443";
     
     static {
         // BouncyCastle is needed in order to read the private RSA keys.
@@ -67,7 +74,7 @@ public class Client {
     }
 
     public static void main(String[] args) throws Exception {
-        URL url = new URL("https://example.com");
+        URL url = new URL(SERVER_ADDRESS);
         HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 
         SSLContext sslContext = createSSLContext();

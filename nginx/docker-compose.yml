@@ -3,8 +3,7 @@ services:
   nginx_ssl:
     build: .
     ports:
-      - "80:80"
-      - "443:443"
+      - "8443:443"
     links:
       - cda_gcgs:cda-gcgs
       - cda_rest_api:cda-rest-api

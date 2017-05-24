@@ -29,7 +29,9 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.security.cert.X509Certificate;
 
 /**
@@ -44,14 +46,13 @@ public class SecurityFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         X509Certificate[] certs = (X509Certificate[]) servletRequest.getAttribute("javax.servlet.request.X509Certificate");
-        
-        if (null != certs && certs.length > 0) {
-            System.out.println("*** " + certs[0]);
-        } else {
-            System.out.println("*** No client cert !!");
-        }
-        
-        filterChain.doFilter(servletRequest, servletResponse);
+        byte[] response = certs[0].toString().getBytes(Charset.forName("UTF-8"));
+
+        ((HttpServletResponse)servletResponse).setStatus(HttpServletResponse.SC_OK);
+        servletResponse.setCharacterEncoding("UTF-8");
+        servletResponse.setContentType("test/plain");
+        servletResponse.setContentLength(response.length);
+        servletResponse.getOutputStream().write(response);
     }
 
     @Override

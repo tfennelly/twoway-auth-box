@@ -24,12 +24,12 @@
                             <Arg name="next">http/1.1</Arg>
                             <Arg name="sslContextFactory">
                                 <New class="org.eclipse.jetty.util.ssl.SslContextFactory">
-                                    <Set name="KeyStorePath"><Property name="jetty.base" default="../intermediate/server" />/<Property name="jetty.keystore" default="keystore.jks"/></Set>
+                                    <Set name="KeyStorePath"><Property name="jetty.base" default="../certs" />/<Property name="jetty.keystore" default="server.keystore"/></Set>
                                     <Set name="KeyStorePassword"><Property name="jetty.keystore.password" default="123123"/></Set>
 
                                     <Set name="KeyManagerPassword"><Property name="jetty.keymanager.password" default="123123"/></Set>
 
-                                    <Set name="TrustStorePath"><Property name="jetty.base" default="../intermediate/server" />/<Property name="jetty.truststore" default="truststore.jks"/></Set>
+                                    <Set name="TrustStorePath"><Property name="jetty.base" default="../certs" />/<Property name="jetty.truststore" default="truststore"/></Set>
                                     <Set name="TrustStorePassword"><Property name="jetty.truststore.password" default="123123"/></Set>
 
                                     <Set name="EndpointIdentificationAlgorithm"></Set>
@@ -48,12 +48,6 @@
                                 <New id="sslHttpConfig" class="org.eclipse.jetty.server.HttpConfiguration">
                                     <Set name="secureScheme">https</Set>
                                     <Set name="securePort"><Property name="jetty.secure.port" default="8443" /></Set>
-                                    <!--<Set name="outputBufferSize">32768</Set>-->
-                                    <!--<Set name="requestHeaderSize">8192</Set>-->
-                                    <!--<Set name="responseHeaderSize">8192</Set>-->
-                                    <!--<Set name="sendServerVersion">true</Set>-->
-                                    <!--<Set name="sendDateHeader">false</Set>-->
-                                    <!--<Set name="headerCacheSize">512</Set>-->
                                     <Call name="addCustomizer">
                                         <Arg><New class="org.eclipse.jetty.server.SecureRequestCustomizer"/></Arg>
                                     </Call>
