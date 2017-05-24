@@ -1,9 +1,16 @@
-# build from the official Nginx image
-FROM nginx:1.13.0
+FROM ubuntu:16.04
 
-RUN apt-get update && apt-get install -y curl
+# For the `perl_modules` extension.                                                                       
+RUN apt-get update && apt-get install -y nginx nginx-extras
+
+# Overwrite default nginx configuration                                                                   
+COPY nginx.conf /etc/nginx/
 
 COPY nginx.conf /etc/nginx/conf.d/
 COPY certs/server.crt         /etc/nginx/certs/
 COPY certs/server.key         /etc/nginx/certs/
 COPY certs/ca.crt             /etc/nginx/certs/
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
